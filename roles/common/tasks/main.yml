@@ -8,42 +8,46 @@
 - include: zfs_packages.yml
   when:
     - zfs_backend
-    - inventory_hostname in groups['galera-node']
+    - inventory_hostname in groups['galera_node']
 
 - include: zfs_blocks.yml
   when:
     - zfs_backend
-    - inventory_hostname in groups['galera-node']
+    - inventory_hostname in groups['galera_node']
+
+- include: galera_users.yml
+
+- include: galera_packages.yml
+
+- include: galera_services.yml
+  when:
+    - inventory_hostname in groups['galera_node']
+
+- include: galera_cleanups.yml
+  when:
+    - inventory_hostname in groups['galera_node']
 
 - include: zfs_mounts.yml
   when:
     - zfs_backend
-    - inventory_hostname in groups['galera-node']
+    - inventory_hostname in groups['galera_node']
 
-- include: galera_packages.yml
+- include: galera_directories.yml
   when:
-    - inventory_hostname in groups['galera-node']
+    - inventory_hostname in groups['galera_node']
 
-- include: galera_services.yml
+- include: galera_init_root.yml
   when:
-    - inventory_hostname in groups['galera-node']
-
-- include: galera_files.yml
-  when:
-    - inventory_hostname in groups['galera-node']
-
-- include: galera_dirs_parents.yml
-  when:
-    - inventory_hostname in groups['galera-node']
+    - inventory_hostname in groups['galera_node']
 
 - include: haproxy_packages.yml
   when:
-    - inventory_hostname in groups['galera-lb']
+    - inventory_hostname in groups['galera_lb']
 
 - include: haproxy_services.yml
   when:
-    - inventory_hostname in groups['galera-lb']
+    - inventory_hostname in groups['galera_lb']
 
-- include: haproxy_files.yml
+- include: haproxy_cleanups.yml
   when:
-    - inventory_hostname in groups['galera-lb']
+    - inventory_hostname in groups['galera_lb']

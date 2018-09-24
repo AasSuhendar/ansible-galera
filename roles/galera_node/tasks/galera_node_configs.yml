@@ -1,0 +1,24 @@
+---
+- name: Generate Galera Bind Address Configuration
+  template:
+    src: bind-address.cnf.j2
+    dest: /etc/mysql/conf.d/bind-address.cnf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Generate Galera Cluster Configuration
+  template:
+    src: galera.cnf.j2
+    dest: /etc/mysql/conf.d/galera.cnf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Generate Galera Tunning Configuration
+  template:
+    src: tunning.cnf.j2
+    dest: /etc/mysql/conf.d/tunning.cnf
+    owner: root
+    group: root
+    mode: 0644

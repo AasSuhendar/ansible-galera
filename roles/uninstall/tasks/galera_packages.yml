@@ -1,5 +1,5 @@
 ---
-- name: Uninstall MariaDB Packages
+- name: Uninstall Galera Client Packages
   apt:
     name: "{{ item }}"
     force_apt_get: yes
@@ -8,15 +8,51 @@
     purge: yes
     state: absent
   with_items:
-    - mariadb-server
-    - mariadb-client
+    - percona-xtradb-cluster-common-{{ galera_version_major }}.{{ galera_version_minor }}
+    - percona-xtradb-cluster-client-{{ galera_version_major }}.{{ galera_version_minor }}
+  when:
+    - galera_distribution == 'percona'
 
-- name: Uninstall MariaDB Repository
-  file:
-    path: "/etc/apt/sources.list.d/mariadb-{{ galera_version_major }}.{{ galera_version_minor }}.list"
+- name: Uninstall Galera Server Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    autoremove: yes
+    autoclean: yes
+    purge: yes
     state: absent
+  with_items:
+    - percona-xtradb-cluster-garbd-{{ galera_version_major }}.{{ galera_version_minor }}
+    - percona-xtradb-cluster-common-{{ galera_version_major }}.{{ galera_version_minor }}
+    - percona-xtradb-cluster-server-{{ galera_version_major }}.{{ galera_version_minor }}
+    - percona-xtradb-cluster-galera-3.x
+    - percona-xtrabackup-24
+  when:
+    - galera_distribution == 'percona'
+    - inventory_hostname in groups['galera_node']
 
-- name: Uninstall MariaDB Keyring
-  apt_key:
-    id: 199369E5404BD5FC7D2FE43BCBCB082A1BB943DB
+- name: Uninstall Galera Repository
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    autoremove: yes
+    autoclean: yes
+    purge: yes
     state: absent
+  with_items:
+    - percona-release
+  when:
+    - galera_distribution == 'percona'
+
+- name: Install AppArmor Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    update_cache: yes
+    autoremove: yes
+    autoclean: yes
+    state: present
+  with_items:
+    - apparmor
+  when:
+    - galera_distribution == 'percona'
